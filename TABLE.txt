@@ -1,0 +1,270 @@
+1. PERSON TABLE
+
+CREATE TABLE person (
+    person_id           NUMBER          PRIMARY KEY,
+    first_name          VARCHAR(50),
+    middle_name         VARCHAR(50),
+    last_name           VARCHAR(50),
+    gender              VARCHAR(10),
+    date_of_birth       DATE,
+    age                 NUMBER,
+    nationality         VARCHAR(50),
+    marital_status      VARCHAR(20),
+    blood_group         VARCHAR(5),
+    religion            VARCHAR(50),
+    language            VARCHAR(50)
+);
+
+ALTER TABLE person ADD           phone_temp      VARCHAR(15);
+ALTER TABLE person MODIFY        first_name      VARCHAR(100);
+ALTER TABLE person RENAME COLUMN phone_temp      TO contact_temp;
+ALTER TABLE person DROP COLUMN   contact_temp;
+
+INSERT INTO person VALUES (1, 'Ram',   'Bahadur', 'Thapa',    'Male',   '1990-04-15', 34, 'Nepali', 'Married',  'B+',  'Hindu',    'Nepali');
+INSERT INTO person VALUES (2, 'Sita',  NULL,      'Sharma',   'Female', '1995-08-22', 28, 'Nepali', 'Single',   'O+',  'Hindu',    'Nepali');
+INSERT INTO person VALUES (3, 'Aarav', 'Kumar',   'Shrestha', 'Male',   '2000-01-10', 24, 'Nepali', 'Single',   'A-',  'Buddhist', 'Nepali');
+INSERT INTO person VALUES (4, 'Priya', NULL,      'Karki',    'Female', '1988-11-30', 35, 'Nepali', 'Married',  'AB+', 'Hindu',    'Newari');
+INSERT INTO person VALUES (5, 'Bikash','Raj',     'Adhikari', 'Male',   '1975-06-05', 48, 'Nepali', 'Divorced', 'O-',  'Hindu',    'Nepali');
+
+SELECT * FROM person;
+SELECT first_name, last_name, age, gender FROM person;
+SELECT * FROM person WHERE gender = 'Male';
+SELECT * FROM person WHERE age > 30;
+SELECT * FROM person WHERE marital_status = 'Single' AND nationality = 'Nepali';
+SELECT * FROM person WHERE blood_group = 'O+' OR blood_group = 'O-';
+SELECT * FROM person WHERE first_name LIKE 'A%';
+SELECT * FROM person WHERE age BETWEEN 25 AND 40;
+SELECT * FROM person WHERE middle_name IS NULL;
+SELECT * FROM person ORDER BY last_name ASC;
+
+
+2. CONTACT_INFO TABLE
+
+CREATE TABLE contact_info (
+    contact_id          NUMBER          PRIMARY KEY,
+    person_id           NUMBER          REFERENCES person(person_id),
+    phone_number        VARCHAR(15),
+    email               VARCHAR(100),
+    emergency_contact   VARCHAR(15),
+
+    CONSTRAINT fk_contact_person FOREIGN KEY (person_id) REFERENCES person(person_id)
+);
+
+ALTER TABLE contact_info ADD         alternate_phone     VARCHAR(15);
+ALTER TABLE contact_info MODIFY      email               VARCHAR(150);
+ALTER TABLE contact_info DROP COLUMN alternate_phone;
+
+INSERT INTO contact_info VALUES (101, 1, '9841000001', 'ram.thapa@email.com',   '9800000011');
+INSERT INTO contact_info VALUES (102, 2, '9841000002', 'sita.sharma@email.com', '9800000022');
+INSERT INTO contact_info VALUES (103, 3, '9841000003', 'aarav.s@email.com',     '9800000033');
+INSERT INTO contact_info VALUES (104, 4, '9841000004', 'priya.karki@email.com', '9800000044');
+INSERT INTO contact_info VALUES (105, 5, '9841000005', 'bikash.a@email.com',    '9800000055');
+
+SELECT * FROM contact_info;
+SELECT person_id, phone_number, email FROM contact_info;
+SELECT * FROM contact_info WHERE person_id = 1;
+SELECT * FROM contact_info WHERE email LIKE '%@email.com';
+SELECT c.contact_id, p.first_name, p.last_name, c.phone_number, c.email
+FROM contact_info c JOIN person p ON c.person_id = p.person_id;
+
+
+3. ADDRESS TABLE
+
+CREATE TABLE address (
+    address_id          NUMBER          PRIMARY KEY,
+    person_id           NUMBER          REFERENCES person(person_id),
+    street              VARCHAR(100),
+    city                VARCHAR(50),
+    state               VARCHAR(50),
+    country             VARCHAR(50),
+    postal_code         NUMBER,
+
+    CONSTRAINT fk_address_person FOREIGN KEY (person_id) REFERENCES person(person_id)
+);
+
+ALTER TABLE address ADD         address_type    VARCHAR(20);
+ALTER TABLE address MODIFY      street          VARCHAR(150);
+ALTER TABLE address DROP COLUMN address_type;
+
+INSERT INTO address VALUES (201, 1, 'Baneshwor Marg', 'Kathmandu', 'Bagmati', 'Nepal', 44600);
+INSERT INTO address VALUES (202, 2, 'Lakeside Road',  'Pokhara',   'Gandaki', 'Nepal', 33700);
+INSERT INTO address VALUES (203, 3, 'New Road',       'Kathmandu', 'Bagmati', 'Nepal', 44601);
+INSERT INTO address VALUES (204, 4, 'Mahendra Path',  'Butwal',    'Lumbini', 'Nepal', 32907);
+INSERT INTO address VALUES (205, 5, 'Dharan Bazaar',  'Dharan',    'Koshi',   'Nepal', 56700);
+
+SELECT * FROM address;
+SELECT * FROM address WHERE city = 'Kathmandu';
+SELECT * FROM address WHERE state = 'Bagmati' AND country = 'Nepal';
+SELECT * FROM address ORDER BY city ASC;
+SELECT a.address_id, p.first_name, p.last_name, a.city, a.state
+FROM address a JOIN person p ON a.person_id = p.person_id;
+
+
+4. EDUCATION TABLE
+
+CREATE TABLE education (
+    education_id        NUMBER          PRIMARY KEY,
+    person_id           NUMBER          REFERENCES person(person_id),
+    school_name         VARCHAR(100),
+    degree              VARCHAR(50),
+    field_of_study      VARCHAR(100),
+    start_year          DATE,
+    end_year            DATE,
+
+    CONSTRAINT fk_education_person FOREIGN KEY (person_id) REFERENCES person(person_id)
+);
+
+ALTER TABLE education ADD         grade   VARCHAR(5);
+ALTER TABLE education MODIFY      degree  VARCHAR(100);
+ALTER TABLE education DROP COLUMN grade;
+
+INSERT INTO education VALUES (301, 1, 'Tribhuvan University',  'Bachelor', 'Business Administration', '2008-07-01', '2012-06-30');
+INSERT INTO education VALUES (302, 2, 'Pokhara University',    'Bachelor', 'Computer Science',        '2013-07-01', '2017-06-30');
+INSERT INTO education VALUES (303, 3, 'Kathmandu University',  'Bachelor', 'Civil Engineering',       '2018-07-01', '2022-06-30');
+INSERT INTO education VALUES (304, 4, 'Tribhuvan University',  'Master',   'Public Health',           '2010-07-01', '2012-06-30');
+INSERT INTO education VALUES (305, 5, 'Purbanchal University', 'Bachelor', 'Nursing',                 '1994-07-01', '1998-06-30');
+
+SELECT * FROM education;
+SELECT * FROM education WHERE degree = 'Bachelor';
+SELECT * FROM education WHERE field_of_study LIKE '%Engineering%';
+SELECT * FROM education WHERE end_year IS NULL;
+SELECT * FROM education ORDER BY start_year DESC;
+SELECT e.education_id, p.first_name, e.school_name, e.degree, e.field_of_study
+FROM education e JOIN person p ON e.person_id = p.person_id;
+
+
+5. EMPLOYMENT TABLE
+
+CREATE TABLE employment (
+    job_id              NUMBER          PRIMARY KEY,
+    person_id           NUMBER          REFERENCES person(person_id),
+    company_name        VARCHAR(100),
+    job_title           VARCHAR(50),
+    salary              DECIMAL(10,2),
+    start_date          DATE,
+    end_date            DATE,
+
+    CONSTRAINT fk_employment_person FOREIGN KEY (person_id) REFERENCES person(person_id)
+);
+
+ALTER TABLE employment ADD         department  VARCHAR(50);
+ALTER TABLE employment MODIFY      job_title   VARCHAR(100);
+ALTER TABLE employment DROP COLUMN department;
+
+INSERT INTO employment VALUES (401, 1, 'Nepal Bank Ltd',    'Branch Manager',        85000.00, '2013-01-15', NULL);
+INSERT INTO employment VALUES (402, 2, 'Deerwalk Services', 'Software Developer',    75000.00, '2018-03-01', NULL);
+INSERT INTO employment VALUES (403, 3, 'Ncell Pvt Ltd',     'Network Engineer',      65000.00, '2022-09-01', NULL);
+INSERT INTO employment VALUES (404, 4, 'WHO Nepal',         'Public Health Officer', 90000.00, '2013-05-01', '2020-04-30');
+INSERT INTO employment VALUES (405, 5, 'Bir Hospital',      'Senior Nurse',          55000.00, '1999-01-01', NULL);
+
+SELECT * FROM employment;
+SELECT * FROM employment WHERE salary > 70000;
+SELECT * FROM employment WHERE end_date IS NULL;
+SELECT * FROM employment WHERE job_title LIKE '%Manager%';
+SELECT * FROM employment WHERE salary BETWEEN 50000 AND 80000;
+SELECT * FROM employment ORDER BY salary DESC;
+SELECT e.job_id, p.first_name, p.last_name, e.company_name, e.job_title, e.salary
+FROM employment e JOIN person p ON e.person_id = p.person_id;
+
+
+6. IDENTIFICATION TABLE
+
+CREATE TABLE identification (
+    id_number           NUMBER          PRIMARY KEY,
+    person_id           NUMBER          REFERENCES person(person_id),
+    voter_id            NUMBER,
+    citizenship_number  VARCHAR(50),
+    passport_number     VARCHAR(20),
+    driving_license     VARCHAR(20),
+    pan_number          NUMBER,
+    nid_number          VARCHAR(20),
+
+    CONSTRAINT fk_identification_person FOREIGN KEY (person_id) REFERENCES person(person_id)
+);
+
+ALTER TABLE identification ADD         issue_date      DATE;
+ALTER TABLE identification MODIFY      passport_number VARCHAR(30);
+ALTER TABLE identification DROP COLUMN issue_date;
+
+INSERT INTO identification VALUES (501, 1, 100111001, 'KA-12-345-678', 'PA1234567', 'DL-KA-12345', 300011001, 'NID-10001');
+INSERT INTO identification VALUES (502, 2, 100111002, 'GA-09-876-543', 'PA7654321', 'DL-GA-67890', 300011002, 'NID-10002');
+INSERT INTO identification VALUES (503, 3, 100111003, 'KA-05-111-222', 'PA1111222', 'DL-KA-11122', 300011003, 'NID-10003');
+INSERT INTO identification VALUES (504, 4, 100111004, 'LU-03-333-444', 'PA3334444', NULL,          300011004, 'NID-10004');
+INSERT INTO identification VALUES (505, 5, 100111005, 'KO-07-555-666', 'PA5556666', 'DL-KO-55566', 300011005, 'NID-10005');
+
+SELECT * FROM identification;
+SELECT * FROM identification WHERE person_id = 1;
+SELECT * FROM identification WHERE passport_number IS NOT NULL;
+SELECT * FROM identification WHERE driving_license IS NULL;
+SELECT i.id_number, p.first_name, p.last_name, i.citizenship_number, i.passport_number
+FROM identification i JOIN person p ON i.person_id = p.person_id;
+
+
+7. HEALTH_RECORD TABLE
+
+CREATE TABLE health_record (
+    health_id           NUMBER          PRIMARY KEY,
+    person_id           NUMBER          REFERENCES person(person_id),
+    height              DECIMAL(5,2),
+    weight              DECIMAL(5,2),
+    blood_pressure      VARCHAR(10),
+    allergies           TEXT,
+    medical_history     TEXT,
+
+    CONSTRAINT fk_health_person FOREIGN KEY (person_id) REFERENCES person(person_id)
+);
+
+ALTER TABLE health_record ADD         last_checkup    DATE;
+ALTER TABLE health_record MODIFY      blood_pressure  VARCHAR(20);
+ALTER TABLE health_record DROP COLUMN last_checkup;
+
+INSERT INTO health_record VALUES (601, 1, 172.50, 74.00, '120/80', 'None',       'Appendix removed in 2005');
+INSERT INTO health_record VALUES (602, 2, 158.00, 55.50, '110/70', 'Dust',       'None');
+INSERT INTO health_record VALUES (603, 3, 175.00, 68.00, '118/76', 'None',       'None');
+INSERT INTO health_record VALUES (604, 4, 162.00, 60.00, '130/85', 'Penicillin', 'Hypertension diagnosed 2019');
+INSERT INTO health_record VALUES (605, 5, 165.00, 70.00, '125/82', 'None',       'Diabetes Type 2 since 2010');
+
+SELECT * FROM health_record;
+SELECT * FROM health_record WHERE weight > 65;
+SELECT * FROM health_record WHERE allergies != 'None';
+SELECT * FROM health_record WHERE height BETWEEN 160 AND 175;
+SELECT * FROM health_record ORDER BY weight DESC;
+SELECT h.health_id, p.first_name, p.last_name, h.height, h.weight, h.blood_pressure
+FROM health_record h JOIN person p ON h.person_id = p.person_id;
+
+
+8. SKILLS TABLE
+
+CREATE TABLE skills (
+    skill_id            NUMBER          PRIMARY KEY,
+    person_id           NUMBER          REFERENCES person(person_id),
+    skill_name          VARCHAR(50),
+    skill_level         VARCHAR(20),
+
+    CONSTRAINT fk_skills_person FOREIGN KEY (person_id) REFERENCES person(person_id)
+);
+
+ALTER TABLE skills ADD         years_of_experience     NUMBER;
+ALTER TABLE skills MODIFY      skill_level             VARCHAR(30);
+ALTER TABLE skills DROP COLUMN years_of_experience;
+
+INSERT INTO skills VALUES (701, 1, 'Financial Management', 'Expert');
+INSERT INTO skills VALUES (702, 1, 'Leadership',           'Expert');
+INSERT INTO skills VALUES (703, 2, 'Python',               'Intermediate');
+INSERT INTO skills VALUES (704, 2, 'SQL',                  'Advanced');
+INSERT INTO skills VALUES (705, 3, 'AutoCAD',              'Advanced');
+INSERT INTO skills VALUES (706, 3, 'Project Management',   'Intermediate');
+INSERT INTO skills VALUES (707, 4, 'Epidemiology',         'Expert');
+INSERT INTO skills VALUES (708, 5, 'Patient Care',         'Expert');
+INSERT INTO skills VALUES (709, 5, 'First Aid',            'Expert');
+
+SELECT * FROM skills;
+SELECT * FROM skills WHERE skill_level = 'Expert';
+SELECT * FROM skills WHERE skill_name LIKE '%Management%';
+SELECT * FROM skills WHERE person_id = 2;
+SELECT * FROM skills ORDER BY skill_level ASC;
+SELECT s.skill_id, p.first_name, p.last_name, s.skill_name, s.skill_level
+FROM skills s JOIN person p ON s.person_id = p.person_id;
+SELECT p.first_name, p.last_name, COUNT(s.skill_id) AS Total_Skills
+FROM skills s JOIN person p ON s.person_id = p.person_id
+GROUP BY p.first_name, p.last_name;
