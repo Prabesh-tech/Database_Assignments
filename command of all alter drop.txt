@@ -1,0 +1,191 @@
+/* AlterCourse */
+
+--PKs
+
+
+ALTER TABLE subject_areas
+ADD CONSTRAINT pk_subject_areas
+PRIMARY KEY (subject_id);
+
+ALTER TABLE courses
+ADD CONSTRAINT pk_courses
+PRIMARY KEY (course_id);
+
+ALTER TABLE instructors
+ADD CONSTRAINT pk_instructors
+PRIMARY KEY (instructor_id);
+
+ALTER TABLE offerings
+ADD CONSTRAINT pk_offerings
+PRIMARY KEY (offering_id);
+
+ALTER TABLE attendance
+ADD CONSTRAINT pk_attendance
+PRIMARY KEY (offering_id, student_id, start_date);
+
+ALTER TABLE sites
+ADD CONSTRAINT pk_sites
+PRIMARY KEY (site_id);
+
+ALTER TABLE students
+ADD CONSTRAINT pk_students
+PRIMARY KEY (student_id);
+
+ALTER TABLE invoices
+ADD CONSTRAINT pk_invoices
+PRIMARY KEY (invoice_number); 
+
+
+--FKs
+ALTER TABLE courses
+ADD CONSTRAINT fk_c_subject_areas
+FOREIGN KEY (subject_id)
+REFERENCES subject_areas(subject_id);
+
+ALTER TABLE offerings
+ADD CONSTRAINT fk_o_sites
+FOREIGN KEY (site_id)
+REFERENCES sites(site_id);
+
+ALTER TABLE offerings
+ADD CONSTRAINT fk_o_courses
+FOREIGN KEY (course_id)
+REFERENCES courses(course_id);
+
+ALTER TABLE offerings
+ADD CONSTRAINT fk_o_instructors
+FOREIGN KEY (instructor_id)
+REFERENCES instructors(instructor_id);
+
+ALTER TABLE attendance
+ADD CONSTRAINT fk_a_students
+FOREIGN KEY (student_id)
+REFERENCES students(student_id);
+
+--CHECK 
+
+ALTER TABLE students
+ADD CONSTRAINT ck_student_firstname
+CHECK (student_firstname = upper(student_firstname));
+
+ALTER TABLE students
+ADD CONSTRAINT ck_student_surname
+CHECK (student_surname = upper(student_surname));
+
+ALTER TABLE courses
+ADD CONSTRAINT ck_duration
+CHECK (duration IN ('3','5'));
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* CreateCourse */
+
+
+CREATE OR REPLACE TYPE address_type AS OBJECT (
+street		VARCHAR2(25),
+city		VARCHAR2(25),
+country		VARCHAR2(20) );
+/
+
+CREATE TABLE addresses OF address_type;
+
+CREATE TABLE students (
+student_id      	NUMBER(6),
+student_firstname   VARCHAR2(20)	NOT NULL,
+student_surname   	VARCHAR2(20)	NOT NULL,
+address 		    REF address_type SCOPE IS addresses,
+phone_number        VARCHAR2(15),
+fax_number          VARCHAR2(15),
+gender       		CHAR,
+date_of_birth   	DATE,
+description         VARCHAR2(250),
+preferred_language  VARCHAR2(2),
+voucher             CHAR,
+company_id		    NUMBER(6));
+
+
+CREATE TABLE instructors (
+instructor_id   NUMBER(6),
+instructor_name VARCHAR2(15)	NOT NULL,
+address 	    REF address_type SCOPE IS addresses,
+salary          NUMBER(10,2),
+commission      NUMBER(10,2),
+mentor_id       NUMBER(6),
+date_hired      DATE,
+profile		    CLOB);
+
+CREATE TABLE courses (
+course_id       NUMBER(6),
+title           VARCHAR2(30),
+duration        NUMBER(6),
+cost            NUMBER(10,2),
+subject_id      NUMBER(6),
+brochure		BFILE);
+
+CREATE TABLE subject_areas (
+subject_id      NUMBER(6),
+subject_name    VARCHAR2(30));
+
+CREATE TABLE offerings (
+offering_id     NUMBER(6),
+course_id       NUMBER(6)       NOT NULL,
+site_id         NUMBER(6)       NOT NULL,
+instructor_id   NUMBER(6),
+start_date      DATE,
+max_no_students NUMBER(6));
+
+CREATE TYPE classroom_type AS OBJECT(
+room_number VARCHAR2(4),
+capacity NUMBER(6),
+description VARCHAR2(200));
+/
+
+CREATE TYPE classroom_varray_type AS VARRAY(50) OF classroom_type;
+/
+
+CREATE TABLE sites (
+site_id         NUMBER(6),
+address 		address_type,
+classroom		classroom_varray_type,
+location        VARCHAR2(12));
+
+CREATE TABLE attendance (
+offering_id     NUMBER(6),
+student_id      NUMBER(6)       NOT NULL,
+start_date		DATE,
+evaluation      NUMBER(6,2),
+amount_paid     NUMBER(10,2));
+
+CREATE OR REPLACE TYPE invoice_item_type AS OBJECT(
+student_surname		VARCHAR2(15),
+course_title		VARCHAR2(30), 
+start_date			DATE,
+end_date			DATE, 
+amount				NUMBER(10,2));
+/
+
+CREATE TYPE invoice_item_table_type AS TABLE OF invoice_item_type;
+/
+
+CREATE TABLE invoices(
+invoice_number	NUMBER(6),
+company_id		NUMBER(6) NOT NULL,
+billing_date	DATE NOT NULL,
+due_date		DATE,
+invoice_item	invoice_item_table_type)
+NESTED TABLE invoice_item STORE AS invoice_item_table;
+	
