@@ -1,0 +1,103 @@
+1. Factorial of a Number
+
+DECLARE
+    num NUMBER := 5;
+    i NUMBER := 1;
+    fact NUMBER := 1;
+BEGIN
+    WHILE i <= num LOOP
+        fact := fact * i;
+        i := i + 1;
+    END LOOP;
+
+    DBMS_OUTPUT.PUT_LINE('Factorial of ' || num || ' is ' || fact);
+END;
+
+
+
+
+
+2. Prime Number Check
+
+DECLARE
+    num NUMBER := 17;
+    i NUMBER := 2;
+    is_prime BOOLEAN := TRUE;
+BEGIN
+    WHILE i <= num / 2 LOOP
+        IF MOD(num, i) = 0 THEN
+            is_prime := FALSE;
+            EXIT;
+        END IF;
+        i := i + 1;
+    END LOOP;
+
+    IF is_prime THEN
+        DBMS_OUTPUT.PUT_LINE(num || ' is a Prime number');
+    ELSE
+        DBMS_OUTPUT.PUT_LINE(num || ' is NOT a Prime number');
+    END IF;
+END;
+
+
+
+
+3. Reverse a Number
+
+DECLARE
+    num NUMBER := 1234;
+    temp NUMBER := num;
+    rem NUMBER;
+    rev NUMBER := 0;
+BEGIN
+    WHILE temp > 0 LOOP
+        rem := MOD(temp, 10);
+        rev := (rev * 10) + rem;
+        temp := FLOOR(temp / 10);
+    END LOOP;
+
+    DBMS_OUTPUT.PUT_LINE('Reverse of ' || num || ' is ' || rev);
+END;
+
+
+
+4. Sum of Digits
+
+DECLARE
+    num NUMBER := 456;
+    temp NUMBER := num;
+    rem NUMBER;
+    sum_digits NUMBER := 0;
+BEGIN
+    WHILE temp > 0 LOOP
+        rem := MOD(temp, 10);
+        sum_digits := sum_digits + rem;
+        temp := FLOOR(temp / 10);
+    END LOOP;
+
+    DBMS_OUTPUT.PUT_LINE('Sum of digits = ' || sum_digits);
+END;
+
+
+
+
+
+5. Fibonacci Series (First 10 terms)
+
+DECLARE
+    a NUMBER := 0;
+    b NUMBER := 1;
+    c NUMBER;
+    i NUMBER := 1;
+BEGIN
+    DBMS_OUTPUT.PUT_LINE(a);
+    DBMS_OUTPUT.PUT_LINE(b);
+
+    WHILE i <= 8 LOOP
+        c := a + b;
+        DBMS_OUTPUT.PUT_LINE(c);
+        a := b;
+        b := c;
+        i := i + 1;
+    END LOOP;
+END;
