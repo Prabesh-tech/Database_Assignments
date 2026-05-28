@@ -1,0 +1,107 @@
+CREATE TABLE Person (
+    person_id INT PRIMARY KEY,
+    f_name VARCHAR(20),
+    m_name VARCHAR(20),
+    l_name VARCHAR(20),
+    gender VARCHAR(1),
+    sex VARCHAR(10),
+    pronouns VARCHAR(20),
+    father_name VARCHAR(20),
+    mother_name VARCHAR(20),
+    grandfather_name VARCHAR(20),
+    marital_status CHAR(1) CHECK (marital_status IN ('Y', 'N')),
+    dob DATE
+);
+
+CREATE TABLE Address (
+    address_id INT PRIMARY KEY,
+    person_id INT,
+
+    temp_ward_no INT,
+    temp_municipality VARCHAR(50),
+    temp_landmark VARCHAR(50),
+    temp_city VARCHAR(50),
+    temp_country VARCHAR(50),
+
+    perm_ward_no INT,
+    perm_municipality VARCHAR(100),
+    perm_landmark VARCHAR(100),
+    perm_city VARCHAR(100),
+    perm_country VARCHAR(100),
+
+    house_no VARCHAR(20),
+    FOREIGN KEY (person_id) REFERENCES Person(person_id)
+);
+
+CREATE TABLE Documents (
+    document_id INT PRIMARY KEY,
+    person_id INT,
+
+    citizenship_no VARCHAR(50),
+    nid_no VARCHAR(50),
+    passport_no VARCHAR(50),
+    driving_license_no VARCHAR(50),
+
+    FOREIGN KEY (person_id) REFERENCES Person(person_id)
+);
+
+CREATE TABLE Qualification (
+    qualification_id INT PRIMARY KEY,
+    person_id INT,
+
+    education VARCHAR(100),
+    employment_status VARCHAR(50),
+    experience_years INT,
+    experience TEXT,
+
+    FOREIGN KEY (person_id) REFERENCES Person(person_id)
+);
+
+SELECT person_id, f_name FROM Person;
+
+SELECT 
+    p.f_name, 
+    p.l_name, 
+    q.education, 
+    q.experience_years 
+FROM Person p
+WHERE q.experience_years > 5;
+
+SELECT 
+    p.f_name, 
+    p.l_name, 
+    p.marital_status
+FROM Person p
+WHERE p.marital_status = Y;
+
+SELECT f_name
+FROM Person p
+WHERE f_name LIKE 'a%' OR 'b%';
+
+-- Made up query
+
+-- SELECT product 
+-- FROM Products pro
+-- WHERE pro.price INT 10 OR 20 OR 30;
+
+-- SELECT product 
+-- FROM Products pro 
+-- WHERE pro.price NOT INT 10 OR 20 OR 30;
+
+-- SELECT product 
+-- FROM Products pro 
+-- WHERE pro.price >= 10 OR <=30;
+
+SELECT gender
+FROM Person p
+WHERE p.gender = 'M';
+
+SELECT 
+    p.f_name, 
+    p.l_name
+FROM Person p;
+
+TRUNCATE TABLE Person;
+
+-- ALTER TABLE table_name
+-- ADD PRIMARY KEY (column1, column2);
