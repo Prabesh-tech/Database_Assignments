@@ -1,0 +1,300 @@
+ 1. VARRAY – SQL Queries
+ Create simple VARRAY type
+
+
+CREATE TYPE name_varray_type AS
+VARRAY(10) OF VARCHAR2(20);
+
+
+ Create object type (for multidimensional VARRAY)
+CREATE TYPE address_obj_type AS OBJECT (
+  house_no VARCHAR2(10),
+  street   VARCHAR2(50),
+  town     VARCHAR2(50),
+  postcode VARCHAR2(10)
+);
+
+
+ Create VARRAY of object type
+CREATE TYPE address_varray_type AS
+VARRAY(3) OF address_obj_type;
+
+
+
+ Create table using VARRAY
+CREATE TABLE students (
+  student_id NUMBER,
+  surname VARCHAR2(50),
+  contacts address_varray_type
+);
+
+
+ Add VARRAY to existing table
+ALTER TABLE students
+ADD (contacts address_varray_type);
+
+
+
+
+
+ 2. NESTED TABLE – SQL QUERIES
+ Create object type
+CREATE TYPE invoice_item_obj AS OBJECT (
+  student_id NUMBER,
+  course_title VARCHAR2(50),
+  amount NUMBER
+);
+
+
+ Create nested table type
+CREATE TYPE invoice_item_table_type AS
+TABLE OF invoice_item_obj;
+
+
+ Create main table with nested table
+CREATE TABLE invoices (
+  invoice_id NUMBER,
+  company_id NUMBER,
+  invoice_items invoice_item_table_type
+)
+NESTED TABLE invoice_items STORE AS invoice_items_store;
+
+
+
+
+ 3. INSERT DATA (VARRAY)
+INSERT INTO students VALUES (
+  1001,
+  'BROWN',
+  address_varray_type(
+    address_obj_type('22', 'FIR TREE STREET', 'NORTHAMPTON', 'NN1 1NN'),
+    address_obj_type('2', 'OAK ROAD', 'BRISTOL', 'BB1 3TR'),
+    address_obj_type('8', 'APPLE CLOSE', 'NORTHAMPTON', 'NN2 5RF')
+  )
+);
+
+
+
+
+ 4. INSERT DATA (NESTED TABLE)
+INSERT INTO invoices VALUES (
+  1001,
+  2001,
+  invoice_item_table_type(
+    invoice_item_obj(451, 'SQL', 1200),
+    invoice_item_obj(617, 'PHP', 1900),
+    invoice_item_obj(237, 'JAVA', 1600)
+  )
+);
+
+
+
+
+ 5. QUERYING VARRAY
+SELECT s.student_id, s.surname, c.*
+FROM students s,
+TABLE(s.contacts) c;
+
+
+
+
+
+ 6. QUERYING NESTED TABLE
+SELECT i.invoice_id, it.*
+FROM invoices i,
+TABLE(i.invoice_items) it;
+
+
+
+
+7. DROP TYPE
+DROP TYPE address_varray_type;
+DROP TYPE invoice_item_table_type;
+
+
+
+
+
+
+
+
+
+
+Assignments
+
+
+
+
+
+
+
+ 1. What is a VARRAY?
+
+A VARRAY (Variable-Size Array) is an Oracle collection type that:
+
+Stores an ordered set of elements
+Each element has an index (position)
+Has a fixed maximum size
+Stores all values in a single column
+Can store simple or object-based data
+
+
+
+2. How do you specify the maximum size of a VARRAY?
+
+
+CREATE TYPE varray_name AS VARRAY(10) OF VARCHAR2(20);
+
+10 = maximum number of elements allowed
+
+
+
+
+
+
+
+ 3. Can you dynamically increase the size of an array?
+
+ No.
+
+VARRAY size is fixed at creation time
+You cannot increase or resize it later
+
+
+
+ 4. What type is a VARRAY stored as?
+Stored as a single column
+Internally stored as a LOB (Large Object / BLOB-like structure) in Oracle
+
+
+
+
+5. Steps to create and use a VARRAY
+Step 1: Create VARRAY type
+CREATE TYPE varray_type_name AS
+VARRAY(size) OF datatype;
+
+
+Step 2: (Optional) Create object type
+CREATE TYPE object_type_name AS OBJECT (
+  attribute1 datatype,
+  attribute2 datatype
+);
+
+
+Step 3: Create VARRAY of object type (if needed)
+CREATE TYPE varray_type_name AS
+VARRAY(size) OF object_type_name;
+
+
+Step 4: Use in a table
+CREATE TABLE students (
+  student_id NUMBER,
+  surname VARCHAR2(50),
+  contacts varray_type_name
+);
+
+
+Step 5: Insert data
+INSERT INTO students VALUES (
+  1,
+  'BROWN',
+  varray_type_name(...)
+);
+
+
+
+
+
+ 6. What is the suffix used in Nested table names?
+ The suffix is:
+
+_table_type
+
+Example:
+
+invoice_item_table_type
+student_table_type
+
+
+
+
+
+
+
+ 7. How do you manage PK and FK relationships in nested tables?
+Nested tables are stored in a separate storage table
+Oracle does not directly enforce PK/FK inside nested structure
+Relationships are managed by:
+ Parent table PK
+Example: student_id
+ Nested table stored separately
+Linked automatically to parent row
+ If needed:
+You can include foreign key-like attribute inside object type
+
+Example:
+
+CREATE TYPE item_obj AS OBJECT (
+  invoice_id NUMBER,   -- acts like FK
+  course_name VARCHAR2(50)
+);
+
+ So relationship is managed through:
+
+Parent key + object reference fields
+
+
+
+
+ 8. Steps to create and use a Nested Table
+Step 1: Create object type
+CREATE TYPE object_type_name AS OBJECT (
+  attribute1 datatype,
+  attribute2 datatype
+);
+
+Step 2: Create nested table type
+CREATE TYPE table_type_name AS
+TABLE OF object_type_name;
+
+Step 3: Use nested table in a table
+CREATE TABLE invoices (
+  invoice_id NUMBER,
+  company_id NUMBER,
+  items table_type_name
+)
+
+
+
+NESTED TABLE items STORE AS items_store;
+Step 4: Insert data
+INSERT INTO invoices VALUES (
+  1,
+  100,
+  table_type_name(
+    object_type_name(...),
+    object_type_name(...)
+  )
+);
+
+
+Step 5: Query nested table
+SELECT i.invoice_id, it.*
+FROM invoices i,
+TABLE(i.items) it;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
