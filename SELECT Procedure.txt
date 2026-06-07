@@ -1,0 +1,77 @@
+1. SELECT Procedure (for STUDENT table)
+
+
+
+
+CREATE OR REPLACE PROCEDURE proc_select_student
+(
+    vn_student_id STUDENT.student_id%TYPE
+)
+IS
+    vc_student_name STUDENT.student_name%TYPE;
+BEGIN
+    SELECT student_name
+    INTO vc_student_name
+    FROM STUDENT
+    WHERE student_id = vn_student_id;
+
+    DBMS_OUTPUT.PUT_LINE('Student Name: ' || vc_student_name);
+
+END proc_select_student;
+
+
+
+
+
+
+
+2. SELECT Procedure (for COURSE table)
+
+
+
+CREATE OR REPLACE PROCEDURE proc_select_course
+(
+    vn_course_id COURSE.course_id%TYPE
+)
+IS
+    vc_course_name COURSE.course_name%TYPE;
+BEGIN
+    SELECT course_name
+    INTO vc_course_name
+    FROM COURSE
+    WHERE course_id = vn_course_id;
+
+    DBMS_OUTPUT.PUT_LINE('Course Name: ' || vc_course_name);
+
+END proc_select_course;
+
+
+
+
+
+
+
+
+
+
+
+3. SELECT Procedure (for TEACHER table)
+
+
+
+
+CREATE OR REPLACE PROCEDURE proc_select_teacher
+(
+    vn_teacher_id TEACHER.teacher_id%TYPE
+)
+IS
+    vc_teacher_name TEACHER.teacher_name%TYPE;
+BEGIN
+    SELECT teacher_name
+    INTO vc_teacher_name
+    FROM TEACHER
+    WHERE teacher_id = vn_teacher_id;
+
+    DBMS_OUTPUT.PUT_LINE('Teacher Name: ' || vc_teacher_name);
+
+END proc_select_teacher;

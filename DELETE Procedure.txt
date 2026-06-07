@@ -1,0 +1,56 @@
+1. DELETE Procedure (for TEACHER table)
+
+
+
+CREATE OR REPLACE PROCEDURE proc_delete_teacher
+(
+    vn_teacher_id TEACHER.teacher_id%TYPE
+)
+IS
+BEGIN
+    DELETE FROM TEACHER
+    WHERE teacher_id = vn_teacher_id;
+
+END proc_delete_teacher;
+
+
+
+
+
+
+
+2. DELETE Procedure (for STUDENT table)
+
+
+
+
+CREATE OR REPLACE PROCEDURE proc_delete_student
+(
+    vn_student_id STUDENT.student_id%TYPE
+)
+IS
+BEGIN
+    DELETE FROM STUDENT
+    WHERE student_id = vn_student_id;
+
+END proc_delete_student;
+
+
+
+
+
+
+3. DELETE Procedure (for COURSE table)
+
+
+
+CREATE OR REPLACE PROCEDURE proc_delete_course
+(
+    vn_course_id COURSE.course_id%TYPE
+)
+IS
+BEGIN
+    DELETE FROM COURSE
+    WHERE course_id = vn_course_id;
+
+END proc_delete_course;

@@ -1,0 +1,76 @@
+1. Procedure to insert into STUDENT table
+
+
+CREATE OR REPLACE PROCEDURE proc_add_student
+(
+    vc_student_name STUDENT.student_name%TYPE
+)
+IS
+BEGIN
+    INSERT INTO STUDENT
+    VALUES (seq_student_id.NEXTVAL, vc_student_name);
+
+END proc_add_student;
+
+
+
+
+
+
+
+2. Procedure to insert into TEACHER table
+
+
+CREATE OR REPLACE PROCEDURE proc_add_teacher
+(
+    vc_teacher_name TEACHER.teacher_name%TYPE
+)
+IS
+BEGIN
+    INSERT INTO TEACHER
+    VALUES (seq_teacher_id.NEXTVAL, vc_teacher_name);
+
+END proc_add_teacher;
+
+
+
+
+
+
+
+
+
+3. Procedure to insert into COURSE table
+
+
+
+CREATE OR REPLACE PROCEDURE proc_add_course
+(
+    vc_course_name COURSE.course_name%TYPE
+)
+IS
+BEGIN
+    INSERT INTO COURSE
+    VALUES (seq_course_id.NEXTVAL, vc_course_name);
+
+END proc_add_course;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
