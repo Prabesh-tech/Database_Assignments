@@ -1,0 +1,37 @@
+1. What is a VARRAY?
+
+=> A VARRAY (Variable-Size Array) is an Oracle collection type that stores an ordered list of elements, where each           element has an index (position).
+
+Elements are stored in sequence,
+Maximum size is fixed at creation time,
+All elements are stored in a single column,
+Can store simple or object types.
+
+
+
+2. How do you specify the maximum size of a VARRAY?
+=> CREATE TYPE name_varray_type AS
+VARRAY(10) OF VARCHAR2(20);
+
+
+
+3. Can you dynamically increase the size of a VARRAY?
+
+=> No Because
+VARRAY size is fixed permanently,
+You cannot expand it after creation,
+You must recreate the type if you need a larger size. 
+
+
+4. What type is a VARRAY stored as?
+
+=> A VARRAY is stored as a:
+LOB (BLOB internally in Oracle)
+Stored inline in a single column.
+
+
+
+
+
+
+

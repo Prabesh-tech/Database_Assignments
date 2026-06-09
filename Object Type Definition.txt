@@ -1,0 +1,160 @@
+Object Type Definition
+CREATE OR REPLACE TYPE object_type_name AS OBJECT (
+  attribute DATATYPE(SIZE),
+  attribute DATATYPE(SIZE),
+  attribute DATATYPE(SIZE)
+);
+
+
+SHOW ERRORS;
+ Object Column in Relational Table
+CREATE TABLE sites (
+  site_id NUMBER(6),
+  address address_type
+);
+
+
+ Simple Object Type Example
+CREATE OR REPLACE TYPE address_type AS OBJECT (
+  street VARCHAR2(25),
+  city VARCHAR2(25),
+  country VARCHAR2(20)
+);
+
+
+Composite Object Type
+CREATE OR REPLACE TYPE company_type AS OBJECT (
+  company_name VARCHAR2(25),
+  training_budget NUMBER(10,2),
+  address address_type
+);
+
+ Object Table Creation
+CREATE TABLE addresses OF address_type;
+
+
+ Describe Object Table
+DESC addresses;
+
+
+ Relational Table with Object Column
+CREATE TABLE sites (
+  site_id NUMBER(6),
+  address address_type
+);
+
+
+REF + SCOPE (Referencing Object Table)
+CREATE TABLE instructors (
+  instructor_id NUMBER(6),
+  address REF address_type SCOPE IS addresses
+);
+
+
+ ALTER TABLE Add REF Column
+ALTER TABLE instructors
+ADD (address REF address_type SCOPE IS addresses);
+
+
+ Dropping Object Type
+DROP TYPE address_type;
+
+
+Dropping Object Table
+DROP TABLE addresses;
+ Key Syntax Variants (from slides)
+CREATE TABLE tablename OF object_type_name;
+CREATE OR REPLACE TYPE object_type_name AS OBJECT (...)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+What are the two types of objects?
+
+The two types of objects in Oracle are:
+
+Object Types (structure/template definitions)
+Object Tables (tables that store actual object data)
+
+
+
+
+
+
+What do you call an ERD that includes objects?
+
+An ERD that includes objects is called an Object-Relational ERD (OR-ERD).
+
+
+
+
+
+
+What is the additional syntax needed at the end of an object definition?
+
+The additional syntax is:
+
+/
+
+
+
+
+
+
+
+Why is the additional syntax needed?
+
+The / is used to execute and compile the object type definition in SQL*Plus and mark the end of the definition block.
+
+
+
+
+
+
+
+Why can you include ‘OR REPLACE’ in a type definition?
+
+OR REPLACE allows you to modify an existing object type without dropping it first. It replaces the old version and avoids dependency errors.
+
+
+
+
+
+
+
+What information will be displayed if you query a REF column using the traditional style?
+
+It will display the object reference (OID/pointer) that points to the row in the object table, not the actual data.
+
+
+
+
+
+
+
+
+
+
+
